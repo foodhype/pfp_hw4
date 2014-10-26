@@ -5,26 +5,12 @@
 using namespace std;
 
 
-class Node {
-    public:
-        int _id;
-        int _label;
-        Node(int id, int label);
-};
-
-
-Node::Node(int id, int label) {
-    _id = id;
-    _label = label;
-}
-
-
 void adj_matrix_bfs(vector< vector<bool> >& adj_matrix,
-        vector<Node>& nodes,
+        vector<int>& labels,
         int source, int n) {
     queue<int> q;
     q.push(source);
-    nodes[source]._label = 0;
+    labels[source] = 0;
 
     while (!q.empty()) {
         int current = q.front();
@@ -32,8 +18,8 @@ void adj_matrix_bfs(vector< vector<bool> >& adj_matrix,
 
         for (int neighbor = 0; neighbor < n; ++neighbor) {
             if (adj_matrix[current][neighbor]) {
-                if (nodes[neighbor]._label > nodes[current]._label + 1) {
-                    nodes[neighbor]._label = nodes[current]._label + 1;
+                if (labels[neighbor] > labels[current] + 1) {
+                    labels[neighbor] = labels[current] + 1;
                     q.push(neighbor);
                 }
             }
@@ -57,17 +43,40 @@ void adj_matrix_ring_test(int n) {
         }
     } 
 
-    vector<Node> nodes;
+    vector<int> labels;
     for (int i = 0; i < n; ++i) {
-        nodes.push_back(Node(i, numeric_limits<int>::max()));
+        labels.push_back(numeric_limits<int>::max());
     }
 
-    adj_matrix_bfs(adj_matrix, nodes, 0, n);
+    adj_matrix_bfs(adj_matrix, labels, 0, n);
 }
 
 
 void adj_matrix_half_connected_test(int n) {
-    
+    vector<vector<bool> > adj_matrix(n);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            adj_matrix[i].push_back(false);
+        }
+    }
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < (i + n / 2) && j < n; ++j) {
+            adj_matrix[i][j] = true;
+        }
+
+        if (i + n / 2 > n) {
+            for (int j = 0; j < (i + n / 2) % n; ++j) {
+                adj_matrix[i][j] = true;
+            }
+        }
+    }
+
+    vector<int> labels;
+    for (int i = 0; i < n; ++i) {
+        labels.push_back(numeric_limits<int>::max());
+    }
+
+    adj_matrix_bfs(adj_matrix, labels, 0, n);
 }
 
 
