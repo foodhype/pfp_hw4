@@ -19,9 +19,9 @@ Node::Node(int id, int label) {
 }
 
 
-int bfs(vector< vector<bool> >& adj_matrix,
+void adj_matrix_bfs(vector< vector<bool> >& adj_matrix,
         vector<Node>& nodes,
-        int source, int m, int n) {
+        int source, int n) {
     queue<int> q;
     q.push(source);
     nodes[source]._label = 0;
@@ -39,23 +39,18 @@ int bfs(vector< vector<bool> >& adj_matrix,
             }
         }
     }
-
-    return 0;
 }
 
 
-int main() {
-    int m, n;
-    cin >> m;
-    cin >> n;
-    vector<vector<bool> > adj_matrix(m);
-    for (int i = 0; i < m; ++i) {
+void adj_matrix_ring_test(int n) {
+    vector<vector<bool> > adj_matrix(n);
+    for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             adj_matrix[i].push_back(false);
         }
     }
-    for (int i = 0; i < m; ++i) {
-        if (i < m - 1) {
+    for (int i = 0; i < n; ++i) {
+        if (i < n - 1) {
             adj_matrix[i][i + 1] = true;
         } else {
             adj_matrix[i][0] = true;
@@ -63,11 +58,40 @@ int main() {
     } 
 
     vector<Node> nodes;
-    for (int i = 0; i < m; ++i) {
+    for (int i = 0; i < n; ++i) {
         nodes.push_back(Node(i, numeric_limits<int>::max()));
     }
 
-    bfs(adj_matrix, nodes, 0, m, n);
+    adj_matrix_bfs(adj_matrix, nodes, 0, n);
+}
+
+
+void adj_matrix_half_connected_test(int n) {
+    
+}
+
+
+// TODO: decide what signature will look like.
+void csr_bfs();
+
+
+void csr_ring_test(int n) {
+    
+}
+
+
+void csr_half_connected_test(int n) {
+    
+}
+
+
+int main() {
+    int n;
+    cin >> n;
+    adj_matrix_ring_test(n);
+    adj_matrix_half_connected_test(n);
+    csr_ring_test(n);
+    csr_half_connected_test(n);
 
     return 0;
 }

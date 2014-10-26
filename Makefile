@@ -1,2 +1,3 @@
 run:
-	g++ -std=c++0x main.cpp -o main && main
+	g++ -std=c++0x main.cpp -o main && main; \
+        rm main
