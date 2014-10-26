@@ -28,6 +28,33 @@ void adj_matrix_bfs(vector< vector<bool> >& adj_matrix,
 }
 
 
+void csr_bfs(vector<int> vertices, vector<int> edges, vector<int> labels,
+        int source, int n) {
+    queue<int> q;
+    q.push(source);
+    labels[source] = 0;
+
+    while (!q.empty()) {
+        int current = q.front();
+        q.pop();
+
+        int start = vertices[current];
+        int end = n;
+        if (current + 1 < n) {
+            end = vertices[current + 1];
+        }
+
+        for (int offset = start; offset < end; ++offset) {
+            int neighbor = edges[offset];
+            if (labels[neighbor] > labels[current] + 1) {
+                labels[neighbor] = labels[current] + 1;
+                q.push(neighbor);
+            }
+        }
+    }
+}
+
+
 void adj_matrix_ring_test(int n) {
     vector<vector<bool> > adj_matrix(n);
     for (int i = 0; i < n; ++i) {
@@ -80,17 +107,54 @@ void adj_matrix_half_connected_test(int n) {
 }
 
 
-// TODO: decide what signature will look like.
-void csr_bfs();
-
-
 void csr_ring_test(int n) {
-    
+    vector<int> vertices;
+    vector<int> edges;
+    for (int i = 0; i < n; ++i) {
+        vertices.push_back(i);
+        if (i < n - 1) {
+            edges.push_back(i + 1);
+        } else {
+            edges.push_back(0);    
+        }
+    }
+
+    vector<int> labels;
+    for (int i = 0; i < n; ++i) {
+        labels.push_back(numeric_limits<int>::max());
+    }
+
+    csr_bfs(vertices, edges, labels, 0, n);
 }
 
 
 void csr_half_connected_test(int n) {
-    
+    vector<int> vertices;
+    vector<int> edges;
+
+    int offset = 0;
+    for (int i = 0; i < n; ++i) {
+        vertices.push_back(offset);
+        for (int j = i + 1; j < (i + n / 2) && j < n; ++j) {
+            edges.push_back(j);
+            ++offset;
+        }
+
+        if (i + n / 2 > n) {
+            for (int j = 0; j < (i + n / 2) % n; ++j) {
+                edges.push_back(j);
+                ++offset;
+            }
+        }
+    }
+
+    vector<int> labels;
+    for (int i = 0; i < n; ++i) {
+        labels.push_back(numeric_limits<int>::max());
+    }
+
+    csr_bfs(vertices, edges, labels, 0, n);
+ 
 }
 
 
